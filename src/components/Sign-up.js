@@ -1,28 +1,52 @@
 import {useState} from 'react'
 import axios from 'axios';
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '../assets/image/logo.png'
 import InputMask from "react-input-mask";
 
+
 function Sign(){
-    const [data, setData] = useState({
+
+    const navigate = useNavigate();
+
+    const [data, setData] = useState([])
+    const [record, setRecord] = useState({
         email: "",
         name: "",
         cpf: "",
         password: ""
     })
 
-    function handle
+    console.log(record)
+
+    function register(){
+        const promise = axios.post('https://mock-api.driven.com.br/api/v4/driven-plus/auth/sign-up',{
+            email: record.email,
+            name: record.name,
+            cpf: record.cpf,
+            password: record.cpf
+        })
+        promise.then(response =>{
+            const {data} = response
+            console.log(data)            
+            navigate('/')
+        })
+        promise.catch(err => console.log(err.response.data))
+    }
+
+    const handleFormChange=(e) =>{
+        setRecord({...record, [e.target.name]: e.target.value})
+    }
     return(
         <Main>
             <img src={logo}/>
             <div>
-                <input placeholder='Nome'></input>
-                <InputMask mask='999.999.999-99'type='text' placeholder='CPF' ></InputMask>
-                <input placeholder='E-mail'></input>
-                <input placeholder='Senha'></input>
-                <button>Entrar</button>
+                <input type='text' placeholder='Nome' name='name' value={record.name} onChange={handleFormChange}></input>
+                <InputMask type='text' placeholder='CPF'  name='cpf' mask='999.999.999-99'  value={record.cpf} onChange={handleFormChange}></InputMask>
+                <input type='text'placeholder='E-mail' name='email' value={record.email} onChange={handleFormChange}></input>
+                <input type='password' placeholder='Senha' name='password'  value={record.password} onChange={handleFormChange}></input>
+                <button onClick={register}>Cadastar</button>
             </div>
             <Link to='/'><h1>Não possuí uma conta? Cadastre-se</h1></Link>
         </Main>
