@@ -1,17 +1,51 @@
-import {Link} from 'react-router-dom'
+import {useState} from 'react'
+import axios from 'axios';
+import {Link, useNavigate} from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '../assets/image/logo.png'
 
 function MainPage(){
+  
+    const navigate = useNavigate();
+
+    const [data, setData] = useState([])
+    const [record, setRecord] = useState({
+        email: "",
+        password: ""
+    })
+
+    console.log(record)
+
+    function enter(){
+        const promise = axios.post('https://mock-api.driven.com.br/api/v4/driven-plus/auth/login',{
+            email: record.email,
+            password: record.password
+        })
+        promise.then(response =>{
+            const {data} = response
+            console.log(data.membership) 
+            if(data.membership == null){
+                navigate('/subscriptions')
+            }else{
+                navigate('/home')
+            }          
+        })
+        promise.catch(err => {alert(err.response.data.message)
+            console.log(err.response.data)})
+    }
+
+    const handleFormChange=(e) =>{
+        setRecord({...record, [e.target.name]: e.target.value})
+    }
     return(
         <Main>
             <img src={logo}/>
-            <div>
-                <input placeholder='E-mail'></input>
-                <input placeholder='senha'></input>
-                <button>Entrar</button>
+            <div>                
+                <input type='text'placeholder='E-mail' name='email' value={record.email} onChange={handleFormChange}></input>
+                <input type='password' placeholder='Senha' name='password'  value={record.password} onChange={handleFormChange}></input>
+                <button onClick={enter}>Entrar</button>
             </div>
-           <Link to='/sign-up'><h1>Não possuí uma conta? Cadastre-se</h1></Link>
+            <Link to='/sign-up'><h1>Não possuí uma conta? Cadastre-se</h1></Link>
         </Main>
     )
 }

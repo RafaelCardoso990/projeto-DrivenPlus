@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState,} from 'react'
 import axios from 'axios';
 import {Link, useNavigate} from 'react-router-dom'
 import styled from 'styled-components'
@@ -25,14 +25,14 @@ function Sign(){
             email: record.email,
             name: record.name,
             cpf: record.cpf,
-            password: record.cpf
+            password: record.password
         })
         promise.then(response =>{
             const {data} = response
             console.log(data)            
             navigate('/')
         })
-        promise.catch(err => console.log(err.response.data))
+        promise.catch(err => alert(err.response.data.message))
     }
 
     const handleFormChange=(e) =>{
