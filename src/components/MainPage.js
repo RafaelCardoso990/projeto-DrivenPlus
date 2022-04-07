@@ -1,14 +1,16 @@
-import {useState} from 'react'
+import {useState, useContext} from 'react'
 import axios from 'axios';
 import {Link, useNavigate} from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '../assets/image/logo.png'
+import DataContext from '../context/Datacontext';
 
 function MainPage(){
-  
-    const navigate = useNavigate();
+    const context = useContext(DataContext)
 
-    const [data, setData] = useState([])
+    const navigate = useNavigate();
+    
+    const [datas, setDatas] = useState([])
     const [record, setRecord] = useState({
         email: "",
         password: ""
@@ -23,7 +25,8 @@ function MainPage(){
         })
         promise.then(response =>{
             const {data} = response
-            console.log(data.membership) 
+            context.setDatas(data) 
+            console.log(data)
             if(data.membership == null){
                 navigate('/subscriptions')
             }else{
